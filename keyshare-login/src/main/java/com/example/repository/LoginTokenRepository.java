@@ -15,4 +15,6 @@ public interface LoginTokenRepository extends JpaRepository<LoginToken, Long>{
 	public List<LoginToken> findAllByUserIdAndUserType(Long userId, String userType);
 	
 	public Optional<LoginToken> findByUuidAndFcmTokenAndUserIdAndUserType(String uuid, String fcmToken, Long userId, String userType);
+	
+	public Optional<LoginToken> findByUuidAndFcmTokenAndUserType(String uuid, String fcmToken, String userType);
 }

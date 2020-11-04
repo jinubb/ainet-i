@@ -219,7 +219,8 @@ public class LoginService {
 		if(loginTokenRepository.findByUuidAndFcmTokenAndUserIdAndUserType(uuid, fcmToken, userId, userType).isPresent()) {
 			throw new RuntimeException("Error : 이미 등록된 device입니다.");
 		}
-		LoginToken loginToken = new LoginToken();
+		
+		LoginToken loginToken = loginTokenRepository.findByUuidAndFcmTokenAndUserType(uuid, fcmToken, userType).orElse(new LoginToken());
 		loginToken.setUuid(uuid);
 		loginToken.setFcmToken(fcmToken);
 		loginToken.setUserId(userId);
