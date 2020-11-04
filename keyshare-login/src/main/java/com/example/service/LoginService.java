@@ -82,7 +82,7 @@ public class LoginService {
 		LoginResponse res = new LoginResponse();
 		User loginShareUser = new User();
 		//카카오 로그인 정보(이메일 or 전화번호)로 등록된 공유 사용자 검색
-		Optional<Object> optEmail = Optional.ofNullable(req.getProfile().getEmail());
+		Optional<Object> optEmail = Optional.ofNullable(Optional.ofNullable(req.getProfile()).orElseThrow(() -> new RuntimeException("사용자의 프로필이 없습니다.")).getEmail());
 		Optional<User> optUser = Optional.empty();
 		//이메일 정보가 존재하는 경우
 		if(optEmail.isPresent()) {
@@ -189,7 +189,7 @@ public class LoginService {
 	public LoginResponse loginUser(LoginRequest req) {
 		LoginResponse res = new LoginResponse();
 		
-		SmsOtp smsOtp = smsOtpRepository.findById(req.getOtp()).orElseThrow(() -> new RuntimeException("존재하지 않는 otp입니다."));
+		SmsOtp smsOtp = smsOtpRepository.findTop1ByOtpOrderByExpiredDateDesc(req.getOtp()).orElseThrow(() -> new RuntimeException("존재하지 않는 otp입니다."));
 		//otp 유효기간 검사
 		isValidOtp(smsOtp);
 	
@@ -216,6 +216,9 @@ public class LoginService {
 
 	//uuid 저장(자동로그인)
 	private LoginToken saveUuidAndFcmToken(String uuid, String fcmToken, Long userId, String userType) {
+		if(loginTokenRepository.findByUuidAndFcmTokenAndUserIdAndUserType(uuid, fcmToken, userId, userType).isPresent()) {
+			throw new RuntimeException("Error : 이미 등록된 device입니다.");
+		}
 		LoginToken loginToken = new LoginToken();
 		loginToken.setUuid(uuid);
 		loginToken.setFcmToken(fcmToken);

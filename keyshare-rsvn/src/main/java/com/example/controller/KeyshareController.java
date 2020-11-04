@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.common.ResponseContainer;
 import com.example.entity.Keyshare;
 import com.example.entity.Vehicle;
+import com.example.entity.VehicleInfo;
 import com.example.model.KeyshareRequest;
 import com.example.model.KeyshareResponse;
 import com.example.model.ReturnRequest;
 import com.example.model.ReturnResponse;
 import com.example.model.ShareCodeRequest;
 import com.example.model.ShareUserKeyshareListResponse;
+import com.example.model.VehicleImage;
 import com.example.service.KeyshareService;
 
 import io.swagger.annotations.ApiOperation;
@@ -109,6 +111,19 @@ public class KeyshareController {
 			response.setPayload(service.findVehicleById(vehicleId));
 		} catch(Exception e) {
 			logger.error("vehicle detail:\n{}",e);
+			response.setError(e);
+		}
+		return response;
+	}
+	
+	@ApiOperation(value = "차량 이미지 경로")
+	@GetMapping("/vehicle/{vehicleId}/image")
+	public ResponseContainer<VehicleInfo> getVehicleImage(@PathVariable("vehicleId")Long vehicleId){
+		ResponseContainer<VehicleInfo> response = ResponseContainer.emptyResponse();
+		try {
+			response.setPayload(service.getVehiecleImage(vehicleId));
+		} catch(Exception e) {
+			logger.error("vehicle image:\n{}",e);
 			response.setError(e);
 		}
 		return response;

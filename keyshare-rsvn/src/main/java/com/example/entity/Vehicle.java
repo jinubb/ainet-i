@@ -31,6 +31,9 @@ public class Vehicle {
 	@Column(name="MODEL")
 	private String model; //차종
 	
+	@Column(name="INFO_ID")
+	private Long infoId;
+	
 	// @Transient
 	/*
 	@Column(name="FUEL")

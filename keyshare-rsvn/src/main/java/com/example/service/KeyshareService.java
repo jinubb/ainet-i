@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpSession;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import com.example.common.UserSession;
 import com.example.entity.Keyshare;
 import com.example.entity.Vehicle;
+import com.example.entity.VehicleInfo;
 import com.example.model.ControlUser;
 import com.example.model.KeyshareRequest;
 import com.example.model.KeyshareResponse;
@@ -29,7 +31,9 @@ import com.example.model.ReturnRequest;
 import com.example.model.ReturnResponse;
 import com.example.model.ShareCodeRequest;
 import com.example.model.ShareUserKeyshareListResponse;
+import com.example.model.VehicleImage;
 import com.example.repository.KeyshareRepository;
+import com.example.repository.VehicleInfoRepository;
 import com.example.repository.VehicleRepository;
 import com.example.util.KeyshareStat;
 import com.example.util.UserType;
@@ -45,6 +49,9 @@ public class KeyshareService {
 	
 	@Autowired
 	private VehicleRepository vehicleRepository;
+	
+	@Autowired
+	private VehicleInfoRepository vehicleInfoRepository;
 
 	@Autowired
 	InternalApiService apiService;
@@ -369,5 +376,11 @@ public class KeyshareService {
 			}
 		}
 		throw new RuntimeException("사용중인 차량만 반납하실수 있습니다.");
+	}
+
+	public VehicleInfo getVehiecleImage(Long vehicleId) {
+		Vehicle vehicle = findVehicleById(vehicleId);
+		Long vehicleInfo = Optional.ofNullable(vehicle.getInfoId()).orElseThrow(() -> new RuntimeException("차량 정보가 입력되지 않았습니다."));
+		return vehicleInfoRepository.findById(vehicleInfo).orElseThrow(() -> new RuntimeException("존재하지 않는 차량 정보 id입니다."));
 	}
 }
