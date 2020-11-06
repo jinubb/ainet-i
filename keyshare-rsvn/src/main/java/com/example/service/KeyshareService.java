@@ -24,6 +24,7 @@ import com.example.entity.Keyshare;
 import com.example.entity.Vehicle;
 import com.example.entity.VehicleInfo;
 import com.example.model.ControlUser;
+import com.example.model.KeyshareListResponse;
 import com.example.model.KeyshareRequest;
 import com.example.model.KeyshareResponse;
 import com.example.model.PushNotificationRequest;
@@ -219,9 +220,24 @@ public class KeyshareService {
 		return vehicleRepository.findAllByOwnerId(loginInfo.getId());
 	}
 
-	//키 공유 리스트 가져오기
-	public List<Keyshare> getListByVehicleId(Long vehicleId) {
-		return keyshareRepository.findAllByVehicleId(vehicleId);
+	//키 공유 리스트 가져오기(최근시간 순, 운행중인 예약 먼저)
+	public List<KeyshareListResponse> getListByVehicleId(Long vehicleId) {
+		List<KeyshareListResponse> listRes = new ArrayList<KeyshareListResponse>();
+		List<Keyshare> listKeyshare = new ArrayList<>();
+		List<Keyshare> listUsingKeyshare = keyshareRepository.findAllByVehicleIdAndShareStatCodeInOrderByStartDateDesc(vehicleId, KeyshareStat.getUsingStatList());
+		List<Keyshare> listNotUsingKeyshare = keyshareRepository.findAllByVehicleIdAndShareStatCodeInOrderByStartDateDesc(vehicleId, KeyshareStat.getNotUsingStatList());
+		listKeyshare.addAll(listUsingKeyshare);
+		listKeyshare.addAll(listNotUsingKeyshare);
+	
+		for(Keyshare keyshare : listKeyshare) {
+			KeyshareListResponse res = new KeyshareListResponse();
+			res.setListKeyshare(keyshare);
+			if(Optional.ofNullable(keyshare.getShareUserId()).isPresent()) {
+				res.setUser(apiService.getUser(keyshare.getShareUserId()));
+			}else res.setUser(null);
+			listRes.add(res);
+		}	
+		return listRes;
 	}
 	
 	//공유코드 등록

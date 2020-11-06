@@ -20,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.example.common.Error.InternalService;
 import com.example.common.ResponseContainer;
 import com.example.model.PushNotificationRequest;
+import com.example.model.User;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,6 +51,7 @@ public class InternalApiService {
 	private ParameterizedTypeReference<ResponseContainer<Void>> voidTypeRef = new ParameterizedTypeReference<ResponseContainer<Void>>() {};
 	private ParameterizedTypeReference<ResponseContainer<Map<String, String>>> stringMapTypeRef = new ParameterizedTypeReference<ResponseContainer<Map<String, String>>>() {};
 	private ParameterizedTypeReference<ResponseContainer<List<String>>> stringListTypeRef = new ParameterizedTypeReference<ResponseContainer<List<String>>>() {};
+	private ParameterizedTypeReference<ResponseContainer<User>> userTypeRef = new ParameterizedTypeReference<ResponseContainer<User>>() {};
 
 	
 	
@@ -95,9 +97,16 @@ public class InternalApiService {
 	}
 
 	public List<String> getFcmToken(Long ownerUserId) {
-		String uri = String.format("%s/fcm/%s", loginUrl, ownerUserId);
+		String uri = String.format("%s/info/%s/fcm", loginUrl, ownerUserId);
 		ResponseEntity<ResponseContainer<List<String>>> responseEntity = template.exchange(uri, HttpMethod.GET,
 				null, stringListTypeRef);
+		return extractEntityBody(responseEntity);
+	}
+	
+	public User getUser(Long userId) {
+		String uri = String.format("%s/info/%s/detail", loginUrl, userId);
+		ResponseEntity<ResponseContainer<User>> responseEntity = template.exchange(uri, HttpMethod.GET,
+				null, userTypeRef);
 		return extractEntityBody(responseEntity);
 	}
 }

@@ -76,6 +76,10 @@ public enum KeyshareStat {
 		return toCodeList(Arrays.asList(KeyshareStat.CONTROL_REQUIRED, KeyshareStat.IN_USE, KeyshareStat.RESERVED));
 	}
 	
+	public static List<String> getNotUsingStatList() {
+		return toCodeList(Arrays.asList(KeyshareStat.CANCELLED, KeyshareStat.COMPLETED, KeyshareStat.CONTROL_REJECT, KeyshareStat.CONTROL_REQUIRED, KeyshareStat.RESERVED));
+	}
+	
 	public static List<String> getUsingStatList() {
 		return toCodeList(Arrays.asList(KeyshareStat.RETURN_DELAYED, KeyshareStat.IN_USE, KeyshareStat.RETURN_REQUIRED, KeyshareStat.DELAY_START));
 	}

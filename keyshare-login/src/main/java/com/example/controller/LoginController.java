@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.common.ResponseContainer;
+import com.example.entity.User;
 import com.example.model.LoginRequest;
 import com.example.model.LoginResponse;
 import com.example.model.OtpRequest;
@@ -99,13 +100,26 @@ public class LoginController {
 	*/
 	
 	@ApiOperation(value = "device FCM 토큰")
-	@GetMapping("/fcm/{userId}")
+	@GetMapping("/info/{userId}/fcm")
 	public ResponseContainer<List<String>> getFcmToken(@PathVariable("userId")Long userId) {
 		ResponseContainer<List<String>> response = ResponseContainer.emptyResponse();		
 		try {
 			response.setPayload(service.getFcmToken(userId));
 		} catch(Exception e) {
-			logger.error("login:\n{}",e);
+			logger.error("info fcm:\n{}",e);
+			response.setError(e);
+		}
+		return response;
+	}
+	
+	@ApiOperation(value = "device FCM 토큰")
+	@GetMapping("/info/{userId}/detail")
+	public ResponseContainer<User> getUserDetail(@PathVariable("userId")Long userId) {
+		ResponseContainer<User> response = ResponseContainer.emptyResponse();		
+		try {
+			response.setPayload(service.findByUserId(userId));
+		} catch(Exception e) {
+			logger.error("info user:\n{}",e);
 			response.setError(e);
 		}
 		return response;

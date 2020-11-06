@@ -19,6 +19,7 @@ import com.example.common.ResponseContainer;
 import com.example.entity.Keyshare;
 import com.example.entity.Vehicle;
 import com.example.entity.VehicleInfo;
+import com.example.model.KeyshareListResponse;
 import com.example.model.KeyshareRequest;
 import com.example.model.KeyshareResponse;
 import com.example.model.ReturnRequest;
@@ -131,8 +132,8 @@ public class KeyshareController {
 	
 	@ApiOperation(value = "차량id별 키 공유 리스트")
 	@GetMapping("/{vehicleId}/list")
-	public ResponseContainer<List<Keyshare>> getListByVehicleId(@PathVariable("vehicleId")Long vehicleId){
-		ResponseContainer<List<Keyshare>> response = ResponseContainer.emptyResponse();
+	public ResponseContainer<List<KeyshareListResponse>> getListByVehicleId(@PathVariable("vehicleId")Long vehicleId){
+		ResponseContainer<List<KeyshareListResponse>> response = ResponseContainer.emptyResponse();
 		try {
 			response.setPayload(service.getListByVehicleId(vehicleId));
 		} catch(Exception e) {

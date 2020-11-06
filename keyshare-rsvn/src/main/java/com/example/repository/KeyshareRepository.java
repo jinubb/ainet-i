@@ -42,5 +42,7 @@ public interface KeyshareRepository extends JpaRepository<Keyshare, Long>{
 //	public List<Keyshare> findAllByShareUserIdAndOrderByStartDateDesc(Long shareUserId);
 	
 	public List<Keyshare> findAllByVehicleIdAndShareStatCodeIn(Long vehicleId, List<String> listShareStatCode);
+	
+	public List<Keyshare> findAllByVehicleIdAndShareStatCodeInOrderByStartDateDesc(Long vehicleId, List<String> listShareStatCode);
 
 }
