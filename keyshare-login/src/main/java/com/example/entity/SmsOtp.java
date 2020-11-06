@@ -38,4 +38,7 @@ public class SmsOtp {
 	
 	@Column(name = "VALID", columnDefinition = "varchar(10) default 'Y'")
 	private String valid; // 사용 전 "Y", 사용했을 경우 "N"
+	
+	@Column(name = "UUID")
+	private String uuid;
 }

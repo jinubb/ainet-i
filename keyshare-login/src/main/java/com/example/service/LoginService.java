@@ -160,6 +160,7 @@ public class LoginService {
 		log.info("otp 유효기간 : " + String.valueOf(cal.getTime()));
 		newSmsOtp.setUserId(user.getId());
 		newSmsOtp.setValid("Y");
+		newSmsOtp.setUuid(req.getUuid());
 		smsOtpRepository.save(newSmsOtp);
 	}
 	
@@ -191,7 +192,7 @@ public class LoginService {
 		
 		SmsOtp smsOtp = smsOtpRepository.findTop1ByOtpOrderByExpiredDateDesc(req.getOtp()).orElseThrow(() -> new RuntimeException("존재하지 않는 otp입니다."));
 		//otp 유효기간 검사
-		isValidOtp(smsOtp);
+		isValidOtp(smsOtp, req.getUuid());
 	
 		User loginUser = findByUserId(smsOtp.getUserId());
 		//uuid 저장
@@ -205,12 +206,16 @@ public class LoginService {
 		return res;
 	}
 	
-	private boolean isValidOtp(SmsOtp smsOtp) {
+	private boolean isValidOtp(SmsOtp smsOtp, String uuid) {
 		if(smsOtp.getExpiredDate().before(new Date())) {
 			throw new RuntimeException("유효기간이 지났습니다.");
 		}else if(smsOtp.getValid().equals("N")) {
 			throw new RuntimeException("이미 사용된 인증코드입니다.");
-		}	
+		}
+		
+		if(!smsOtp.getUuid().equals(uuid)) {
+			throw new RuntimeException("sms를 요청한 device가 아닙니다.");
+		}
 		return true;
 	}
 

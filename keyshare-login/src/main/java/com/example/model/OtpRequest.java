@@ -9,4 +9,5 @@ import lombok.ToString;
 @ToString
 public class OtpRequest {
 	private String phone;
+	private String uuid;
 }
